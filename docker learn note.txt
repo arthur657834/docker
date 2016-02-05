@@ -66,7 +66,8 @@ docker build -t lj/mysql:v1 git地址 //docker build -t arthur657834/docker-desk
 docker tag 85d54f4ba0cc arthur657834/ljtest
 修改REPOSITORY名
 
-
+自动化构建：
+hub.docker.org上新建repository(create automated repository)  关联github帐号下的docker,设置相关配置，然后当github上的代码更新之后会自动打包生成新的镜像
 
 
 
