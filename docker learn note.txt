@@ -19,7 +19,7 @@ docker run<=>docker create + docker start
 docker stop
 docker create ubuntu:14.04
 docker rm 1bd40561d3de 
-docker rm $(docker ps -a -q)
+docker rm $(docker ps -a -q)//删除所有
 
 docker attach 778d0b719b68
 为后台容器添加交互窗口
