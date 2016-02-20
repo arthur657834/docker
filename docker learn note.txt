@@ -69,7 +69,88 @@ docker tag 85d54f4ba0cc arthur657834/ljtest
 自动化构建：
 hub.docker.org上新建repository(create automated repository)  关联github帐号下的docker,设置相关配置，然后当github上的代码更新之后会自动打包生成新的镜像
 
+docker run -d -P training/webapp python app.py //-P 随机映射一个49000-49900的端口 -p 81:5000 指定映射端口 127.0.0.1:81:5000 127.0.0.1::5000
 
+-v /webapp //创建数据卷并挂载到容器 docker inspect suspicious_hoover
+docker run -v /webapp -d -P training/webapp python app.py // 宿主机的路径 /var/lib/docker/volumes/
+
+-v `pwd`:/webapp //指定当前目录为webapp为挂载目录,绝对路径
+docker run --name webapp -v `pwd`:/webapp -d -P training/webapp python app.py //-v `pwd`:/webapp:ro 只读
+dockerfile不支持目录挂载
+
+-v ~/test.txt:/test.txt //挂载文件
+
+注意挂载之后的文件在容器及宿主机之间同步修改
+
+docker run -d -v /dbdata --name dbdata training/postgres //创建数据卷容器
+
+docker run -d --volumes-from=dbdata --name db1 training/postgres //引用数据卷,可以多次引用
+
+docker run -d --volumes-from=db1 --name db2 training/postgres //级联引用
+
+注意:引用的数据卷一旦声明，它的生命周期就跟它的容器(dbdat)无关了
+删除数据卷:删除所有引用的容器，并在删除最后一个时加-v参数(docker rm -v db2)
+
+备份数据卷:
+docker run --volumes-from=dbdata -v $(pwd):/backup ubuntu tar cvf
+原理:新建容器挂载数据卷,映射数据卷
+
+恢复数据卷:
+docker run --volumes-from=dbdata2 ubuntu tar cvf
+docker run --volumes-from=dbdata2 -v $(pwd):/backup ubuntu tar xvf
+
+
+
+容器连接:
+docker run -d --name dbdata training/postgres
+docker run --name web -d -P --link dbdata:db training/webapp python app.py
+
+
+dbdata提供的服务:
+
+1.环境变量
+docker run --rm --name web2 --link dbdata:webdb training/webapp env
+
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=e1f0147bbc90
+WEBDB_PORT=tcp://172.17.0.2:5432
+WEBDB_PORT_5432_TCP=tcp://172.17.0.2:5432
+WEBDB_PORT_5432_TCP_ADDR=172.17.0.2
+WEBDB_PORT_5432_TCP_PORT=5432
+WEBDB_PORT_5432_TCP_PROTO=tcp
+WEBDB_NAME=/web2/webdb
+WEBDB_ENV_PG_VERSION=9.3
+HOME=/root
+
+WEBDB开头的属性
+
+2./etc/hosts
+docker run -it --rm --name web3 --link dbdata:webdb training/webapp /bin/bash
+cat /etc/hosts
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+172.17.0.2      webdb 642ae88af027 dbdata
+172.17.0.4      ff39a846bbfe
+
+代理连接：
+ambassador模式实现跨主机连接
+redis-client->ambassador1->ambassador2->redis-server
+
+redis-server
+docker run -d --name redis crosbymmichael/redis
+
+ambassador2
+docker run -d --name redis crosbymmichael/redis
+
+ambassador1
+docker run -d --name redis_ambassador --expose 6379 -e REDIS_PORT_6379_TCP=tcp://192.168.1.53:6379 svendowideit/ambassador 
+
+redis-client
+docker run -it --rm --name redis --link redis_ambassador:redis
 
 
 
