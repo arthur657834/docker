@@ -153,6 +153,9 @@ redis-client
 docker run -it --rm --name redis --link redis_ambassador:redis
 
 
+定制镜像需要制作运行脚本时,不能在脚本中包含 &！！！！否则导致镜像知道到该行时即退出
+
+docker port ubuntu 3306 //查看3306 到主机的端口映射
 
 
 
