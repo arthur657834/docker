@@ -19,7 +19,8 @@ docker run<=>docker create + docker start
 docker stop
 docker create ubuntu:14.04
 docker rm 1bd40561d3de 
-docker rm $(docker ps -a -q)//删除所有
+docker rm $(docker ps -a -q)//删除所有容器
+docker rmi $(docker images | grep none | awk '{print $3}' | sort -r) #删除所有镜像
 
 docker attach 778d0b719b68
 为后台容器添加交互窗口
@@ -31,7 +32,6 @@ docker run --name=daemon_while -d ubuntu /bin/sh -c "while true;do echo hello" /
 	--restart=always
 	--restart=1 退出码为1重启
 	--restart=on-failure:5 退出码非0尝试重启5次
-
 
 docker 保存镜像:
 	docker commit 91 learn/ping 91为 docker 的镜像ID
@@ -50,6 +50,7 @@ docker发布:
 	
 docker logs -f 778d0b719b68 --tail=5 -t
 docker top 778d0b719b68
+docker stats 778d0b719b68 //docker 资源使用状况
 
 docker exec -d 778d0b719b68 touch /root/q.txt //在docker中执行命令
 docker exec -t -i 778d0b719b68 /bin/bash //进入shell交互界面
@@ -57,6 +58,9 @@ docker exec -t -i 778d0b719b68 /bin/bash //进入shell交互界面
 导入导出镜像
 docker export 778d0b719b68 > lj.rar
 cat lj.rar | docker import - import:container // 或docker import url res:tag
+
+docker save debian02 >/root/debian02.tar
+docker load < debian02.tar
 
 使用dockerfile创建(跟makefile差不多)
 docker build -t lj/mysql:v1 .
