@@ -15,6 +15,6 @@ chmod a+x ovs-docker
 ./ovs-docker del-port br0 eth0 <CONTAINER_ID>
 
 ./ovs-docker add-port br0 eth0 9bc4cb6fbb0b
-ifconfig eth0 172.17.0.2/24  //一定要与docker0 的IP地址处于同一网段,原理还不清楚
+ifconfig eth0 172.17.0.2/24  //注意路由,最好要与docker0 的IP地址处于同一网段
 ifconfig br0 172.17.0.3/24
 
