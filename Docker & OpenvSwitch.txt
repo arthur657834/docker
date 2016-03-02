@@ -1,0 +1,20 @@
+brctl show
+
+docker run --name test --net=none --privileged=true -it centos //--privileged=false         Give extended privileges to this container
+
+-v /var/cache/yum/x86_64/7/base/packages/:/root
+
+cat /etc/hosts 查看容器id
+
+ovs-vsctl add-br br0
+ovs-vsctl show
+
+wget https://github.com/openvswitch/ovs/raw/master/utilities/ovs-docker
+chmod a+x ovs-docker
+./ovs-docker add-port br0 eth0 <CONTAINER_ID> //eth0为容器中网卡名字
+./ovs-docker del-port br0 eth0 <CONTAINER_ID>
+
+./ovs-docker add-port br0 eth0 9bc4cb6fbb0b
+ifconfig eth0 172.17.0.2/24  //一定要与docker0 的IP地址处于同一网段,原理还不清楚
+ifconfig br0 172.17.0.3/24
+
