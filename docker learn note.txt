@@ -103,8 +103,6 @@ docker run --volumes-from=dbdata -v $(pwd):/backup ubuntu tar cvf
 docker run --volumes-from=dbdata2 ubuntu tar cvf
 docker run --volumes-from=dbdata2 -v $(pwd):/backup ubuntu tar xvf
 
-
-
 容器连接:
 docker run -d --name dbdata training/postgres
 docker run --name web -d -P --link dbdata:db training/webapp python app.py

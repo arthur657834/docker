@@ -1,0 +1,28 @@
+1.cAdvisor：
+https://github.com/google/cAdvisor
+
+my understanding：docker stats 的 可视化展现
+
+docker run \
+  --volume=/:/rootfs:ro \
+  --volume=/var/run:/var/run:rw \
+  --volume=/sys:/sys:ro \
+  --volume=/var/lib/docker/:/var/lib/docker:ro \
+  --publish=8080:8080 \
+  --detach=true \
+  --name=cadvisor \
+  --privileged=true \
+  --volume=/cgroup:/cgroup:ro \
+  google/cadvisor:latest
+
+  --privileged=true --volume=/cgroup:/cgroup:ro radhat 和 centos 专有
+
+2.scout
+https://scoutapp.com/
+not free
+
+3.datadog
+https://www.datadoghq.com/
+一直收不到数据
+
+

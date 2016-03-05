@@ -18,3 +18,5 @@ chmod a+x ovs-docker
 ifconfig eth0 172.17.0.2/24  //注意路由,最好要与docker0 的IP地址处于同一网段
 ifconfig br0 172.17.0.3/24
 
+route add default gw 172.17.0.3 //至此test可以正常上网
+
