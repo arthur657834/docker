@@ -64,7 +64,7 @@ docker load < debian02.tar
 
 使用dockerfile创建(跟makefile差不多)
 docker build -t lj/mysql:v1 .
-docker build -t lj/mysql:v1 git地址 //docker build -t arthur657834/docker-desktop github.com/rogaha/docker-desktop
+docker build -t lj/mysql:v1 git地址 //docker build -t sequenceiq/hadoop-docker:2.6.0 github.com/minimicall/hadoop-docker.git
 	onbuild:新镜像指定此镜像为父镜像时执行
 
 docker tag 85d54f4ba0cc arthur657834/ljtest
