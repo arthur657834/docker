@@ -1,0 +1,26 @@
+docker run --name test -v /root/ljtmp:/var/cache/yum/x86_64/7/base/packages/ -it centos
+docker run --name test1 --net=none -v /root/ljtmp:/root --privileged=true -it centos
+
+ip命令安装
+rpm -ivh /root/libnfnetlink-1.0.1-4.el7.x86_64.rpm
+rpm -ivh /root/libmnl-1.0.3-7.el7.x86_64.rpm
+rpm -ivh /root/libnetfilter_conntrack-1.0.4-2.el7.x86_64.rpm 
+rpm -ivh /root/iptables-1.4.21-16.el7.x86_64.rpm 
+rpm -ivh /root/iproute-3.10.0-54.el7.x86_64.rpm 
+
+ip netns add net0
+ip netns exec net0 `command`//ip netns exec net0 bash
+ip netns list
+
+ip link add type veth <=> ip link add A type veth peer name B
+ip link set veth0 netns net0
+ip link set dev veth1 name net1-bridge netns net1
+ip netns exec net0 ip link set veth0 up
+ip netns exec net0 ip address add 10.0.1.1/24 dev veth0
+
+网络类型：
+none
+bridge
+host
+container:containerid
+
