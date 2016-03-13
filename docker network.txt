@@ -11,6 +11,7 @@ rpm -ivh /root/iproute-3.10.0-54.el7.x86_64.rpm
 ip netns add net0
 ip netns exec net0 `command`//ip netns exec net0 bash
 ip netns list
+ip link list
 
 ip link add type veth <=> ip link add A type veth peer name B
 ip link set veth0 netns net0
@@ -24,3 +25,47 @@ bridge
 host
 container:containerid
 
+实例：
+
+     bridge 10.0.1.0/24
+net0(.1)            net1(.2)
+
+创建虚拟网络环境并且连接网线
+ip netns add net0
+ip netns add net1
+ip netns add bridge
+ip link add type veth
+ip link set dev veth0 name net0-bridge netns net0
+ip link set dev veth1 name bridge-net0 netns bridge
+ip link add type veth
+ip link set dev veth0 name net1-bridge netns net1
+ip link set dev veth1 name bridge-net1 netns bridge
+
+在bridge中创建并且设置br设备
+ip netns exec bridge brctl addbr br
+ip netns exec bridge ip link set dev br up
+ip netns exec bridge ip link set dev bridge-net0 up
+ip netns exec bridge ip link set dev bridge-net1 up
+ip netns exec bridge brctl addif br bridge-net0
+ip netns exec bridge brctl addif br bridge-net1
+
+然后配置两个虚拟环境的网卡
+
+ip netns exec net0 ip link set dev net0-bridge up
+ip netns exec net0 ip address add 10.0.1.1/24 dev net0-bridge
+
+ip netns exec net1 ip link set dev net1-bridge up
+ip netns exec net1 ip address add 10.0.1.2/24 dev net1-bridge
+
+测试：
+ip netns exec net0 ping -c 3 10.0.1.2
+
+lldp [ Link Layer Discovery Protocol ]
+lldpcli show neighbors
+https://github.com/vincentbernat/lldpd
+
+
+网络命名空间：
+mdkir -p /var/run/netns/
+container pid => docker inspect --format='{{.State.Pid}}' container id
+ln -s /proc/container pid/ns/net /var/run/netns/container pid
