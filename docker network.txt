@@ -1,7 +1,7 @@
 docker run --name test -v /root/ljtmp:/var/cache/yum/x86_64/7/base/packages/ -it centos
 docker run --name test1 --net=none -v /root/ljtmp:/root --privileged=true -it centos
 
-ipå‘½ä»¤å®‰è£…
+ipÃüÁî°²×°
 rpm -ivh /root/libnfnetlink-1.0.1-4.el7.x86_64.rpm
 rpm -ivh /root/libmnl-1.0.3-7.el7.x86_64.rpm
 rpm -ivh /root/libnetfilter_conntrack-1.0.4-2.el7.x86_64.rpm 
@@ -19,18 +19,18 @@ ip link set dev veth1 name net1-bridge netns net1
 ip netns exec net0 ip link set veth0 up
 ip netns exec net0 ip address add 10.0.1.1/24 dev veth0
 
-ç½‘ç»œç±»åž‹ï¼š
+ÍøÂçÀàÐÍ£º
 none
 bridge
 host
 container:containerid
 
-å®žä¾‹ï¼š
+ÊµÀý£º
 
      bridge 10.0.1.0/24
 net0(.1)            net1(.2)
 
-åˆ›å»ºè™šæ‹Ÿç½‘ç»œçŽ¯å¢ƒå¹¶ä¸”è¿žæŽ¥ç½‘çº¿
+´´½¨ÐéÄâÍøÂç»·¾³²¢ÇÒÁ¬½ÓÍøÏß
 ip netns add net0
 ip netns add net1
 ip netns add bridge
@@ -41,7 +41,7 @@ ip link add type veth
 ip link set dev veth0 name net1-bridge netns net1
 ip link set dev veth1 name bridge-net1 netns bridge
 
-åœ¨bridgeä¸­åˆ›å»ºå¹¶ä¸”è®¾ç½®brè®¾å¤‡
+ÔÚbridgeÖÐ´´½¨²¢ÇÒÉèÖÃbrÉè±¸
 ip netns exec bridge brctl addbr br
 ip netns exec bridge ip link set dev br up
 ip netns exec bridge ip link set dev bridge-net0 up
@@ -49,7 +49,7 @@ ip netns exec bridge ip link set dev bridge-net1 up
 ip netns exec bridge brctl addif br bridge-net0
 ip netns exec bridge brctl addif br bridge-net1
 
-ç„¶åŽé…ç½®ä¸¤ä¸ªè™šæ‹ŸçŽ¯å¢ƒçš„ç½‘å¡
+È»ºóÅäÖÃÁ½¸öÐéÄâ»·¾³µÄÍø¿¨
 
 ip netns exec net0 ip link set dev net0-bridge up
 ip netns exec net0 ip address add 10.0.1.1/24 dev net0-bridge
@@ -57,7 +57,7 @@ ip netns exec net0 ip address add 10.0.1.1/24 dev net0-bridge
 ip netns exec net1 ip link set dev net1-bridge up
 ip netns exec net1 ip address add 10.0.1.2/24 dev net1-bridge
 
-æµ‹è¯•ï¼š
+²âÊÔ£º
 ip netns exec net0 ping -c 3 10.0.1.2
 
 lldp [ Link Layer Discovery Protocol ]
@@ -65,7 +65,12 @@ lldpcli show neighbors
 https://github.com/vincentbernat/lldpd
 
 
-ç½‘ç»œå‘½åç©ºé—´ï¼š
+ÍøÂçÃüÃû¿Õ¼ä£º
 mdkir -p /var/run/netns/
 container pid => docker inspect --format='{{.State.Pid}}' container id
 ln -s /proc/container pid/ns/net /var/run/netns/container pid
+
+--icc=true ACCEPT
+--icc=true DROP
+
+

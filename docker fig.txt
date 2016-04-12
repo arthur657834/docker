@@ -1,0 +1,182 @@
+pip install -U fig
+
+ex1:
+vi fig.yml
+web:
+  image: ubermuda/pagekit
+  ports:
+    - 80
+  links:
+    - db:pagekit_db_1
+  volumes_from:
+    - data
+db:
+  image: orchardup/mysql
+  environment:
+    MYSQL_ROOT_PASSWORD: changethis
+    MYSQL_DATABASE: pagekit
+data:
+  image: busybox
+  command: /bin/true
+  volumes:
+    - /pagekit/storage
+    - /pagekit/app/cache
+	
+fig up
+
+ex2:Rails开发环境
+vi Dockerfile
+FROM ruby
+RUN apt-get update -qq && apt-get install -y build-essential libpq-dev
+RUN mkdir /myapp
+WORKDIR /myapp
+ADD Gemfile /myapp/Gemfile
+RUN bundle install
+ADD . /myapp
+
+rails取最新版本 http://guides.rubyonrails.org/
+vi Gemfile
+source 'https://rubygems.org'
+gem 'rails', '4.2.6'
+
+vi fig.yml
+db:
+  image: postgres
+  ports:
+    - "5432"
+web:
+  build: .
+  command: bundle exec rackup -p 3000
+  volumes:
+    - .:/myapp
+  ports:
+    - "3000:3000"
+  links:
+    - db
+
+fig run web rails new . --force --database=postgresql --skip-bundle
+编辑一下Gemfile文件，去掉therubyracer包的注释, 让Rails依赖的Javascript的运行时环境。
+gem 'therubyracer', platforms: :ruby
+
+fig build
+fig up
+fig run web rake db:create
+localhost:3000
+
+ex3:Django开发环境
+vi Dockerfile
+FROM python:2.7
+ENV PYTHONUNBUFFERED 1
+RUN mkdir /code
+WORKDIR /code
+ADD requirements.txt /code/
+RUN pip install -r requirements.txt
+ADD . /code/
+
+vi requirements.txt
+Django
+psycopg2
+
+vi fig.yml
+db:
+  image: postgres
+web:
+  build: .
+  command: python manage.py runserver 0.0.0.0:8000
+  volumes:
+    - .:/code
+  ports:
+    - "8000:8000"
+  links:
+    - db
+
+fig run web django-admin.py startproject figexample .
+
+修改 figexample/settings.py 的DATABASES =
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'HOST': 'db',
+        'PORT': 5432,
+    }
+}
+
+fig up
+fig run web python manage.py syncdb
+
+localhost:8000 
+
+ex4:Wordpress开发环境
+curl https://wordpress.org/latest.tar.gz | tar -xvzf -
+mkdir wordpress
+cd wordpress
+
+vi Dockerfile
+FROM stackbrew/ubuntu:13.10
+RUN apt-get update && apt-get install php5 php5-mysql -y
+ADD . /code
+
+vi fig.yml
+web:
+  build: .
+  command: php -S 0.0.0.0:8000 -t /code
+  ports:
+    - "8000:8000"
+  links:
+    - db
+  volumes:
+    - .:/code
+db:
+  image: mysql
+  environment:
+    MYSQL_DATABASE: wordpress
+    MYSQL_ROOT_PASSWORD: wordpress
+
+修改wp-config.php：
+<?php
+define('DB_NAME', 'wordpress');
+define('DB_USER', 'root');
+define('DB_PASSWORD', 'wordpress');
+define('DB_HOST', getenv("DB_1_PORT_3306_TCP_ADDR") . ":" . getenv("DB_1_PORT_3306_TCP_PORT"));
+define('DB_CHARSET', 'utf8');
+define('DB_COLLATE', '');
+
+define('AUTH_KEY',         'put your unique phrase here');
+define('SECURE_AUTH_KEY',  'put your unique phrase here');
+define('LOGGED_IN_KEY',    'put your unique phrase here');
+define('NONCE_KEY',        'put your unique phrase here');
+define('AUTH_SALT',        'put your unique phrase here');
+define('SECURE_AUTH_SALT', 'put your unique phrase here');
+define('LOGGED_IN_SALT',   'put your unique phrase here');
+define('NONCE_SALT',       'put your unique phrase here');
+
+$table_prefix  = 'wp_';
+define('WPLANG', '');
+define('WP_DEBUG', false);
+
+if ( !defined('ABSPATH') )
+    define('ABSPATH', dirname(__FILE__) . '/');
+
+require_once(ABSPATH . 'wp-settings.php');
+
+fig up
+
+localhost:8000 
+
+flocker跨主机fig：
+flocker-cli安装：
+yum -y install python python-devel python-virtualenv @buildsys-build
+vi install.sh
+#!/bin/bash
+virtualenv --python=/usr/bin/python2.7 flocker-tutorial
+flocker-tutorial/bin/pip install -U pip
+flocker-tutorial/bin/pip install --quiet https://storage.googleapis.com/archive.clusterhq.com/downloads/flocker/Flocker-0.3.2-py2-none-any.whl
+
+
+cp flocker-deploy /usr/bin/
+flocker-deploy --version
+
+flocker-node安装：
+

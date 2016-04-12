@@ -159,7 +159,8 @@ docker run -it --rm --name redis --link redis_ambassador:redis
 
 docker port ubuntu 3306 //查看3306 到主机的端口映射
 
-
+阿里云docker开发：
+创建ecs时可以选择支持docker的镜像,开机docker daemon启动
 
 
 

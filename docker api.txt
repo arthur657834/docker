@@ -1,0 +1,24 @@
+docker -H 0.0.0.0:2376 -d & # -H 绑定
+docker -H tcp://127.0.0.1:2376 pull ubuntu # -H 连接端口
+
+docker -H 0.0.0.0:2376 -H unix:///var/run/docker.sock -d & # 绑定多接口
+
+使以上设置生效
+修改docker文件  DOCKER_OPTS
+或docker.service文件 ExecStart
+
+API种类：
+注册服务器
+dockerhub
+remote api
+
+curl -X GET http://localhost:2376/info
+
+pip install docker-py 
+
+import docker
+cli=docker.Client('tcp://127.0.0.1:2376')
+print cli.images()
+
+
+
