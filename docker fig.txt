@@ -176,7 +176,72 @@ flocker-tutorial/bin/pip install --quiet https://storage.googleapis.com/archive.
 
 
 cp flocker-deploy /usr/bin/
+cp flocker-reportstate /usr/bin/
 flocker-deploy --version
 
 flocker-node安装：
+yum -y install http://archive.zfsonlinux.org/epel/zfs-release.el7.noarch.rpm
+yum install -y zfs
+
+yum -y install  kernel-devel
+
+yum install -y https://clusterhq-archive.s3.amazonaws.com/centos/clusterhq-release$(rpm -E %dist).noarch.rpm
+yum install -y clusterhq-flocker-node clusterhq-flocker-docker-plugin
+
+curl -sSL https://get.docker.com/ | sh
+systemctl enable docker.service
+systemctl start docker.service
+
+mkdir /opt/flocker
+truncate --size 10G /opt/flocker/pool-dev 
+zpool create flocker /opt/flocker/pool-dev 
+
+ssh-keygen
+ssh-copy-id root@192.168.1.16
+
+vi fig.yml
+elasticsearch:
+  image: clusterhq/elasticsearch
+  ports:
+    - "9200:9200"
+  volumes:
+    - /var/lib/elasticsearch
+
+logstash:
+  image: clusterhq/logstash
+  ports:
+    - "9200:9200"
+  links:
+    - elasticsearch:es
+
+kibana:
+  image: clusterhq/kibana
+  ports:
+    - "80:8080"
+
+vi depolyment.yml
+"version": 1
+"nodes":
+  "192.168.1.16": ["logstash","kibana"]
+  "192.168.1.17": [elasticsearch]
+
+flocker-deploy depolyment.yml fig.yml 
+
+数据迁移17->18：
+vi depolyment.yml
+"version": 1
+"nodes":
+  "192.168.1.16": ["logstash","kibana"]
+  "192.168.1.17": []
+  "192.168.1.18": ["elasticsearch"]
+
+flocker-deploy depolyment.yml fig.yml 
+
+遇到问题：  
+执行flocker-deploy depolyment.yml fig.yml 时出现
+bash: flocker-reportstate: command not found
+
+将flocker-reportstate 加至/usr/bin下依旧未能解决
+
+
 

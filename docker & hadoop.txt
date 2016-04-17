@@ -9,11 +9,14 @@ bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.0.jar grep i
 bin/hadoop dfs -cat output/*
 
 
-docker pull sequenceiq/ambari 
-docker run -d -p 8080 -h 127.0.0.1 --name ambari-singlenode sequenceiq/ambari --tag ambari-server=true
-docker run -e BLUEPRINT=single-node-hdfs-yarn --link ambari-singlenode:ambariserver -t --rm --entrypoint /bin/sh sequenceiq/ambari -c /tmp/install-cluster.sh
+docker pull sequenceiq/ambari:1.6.0
+docker run -d -p 8080 -h 127.0.0.1 --name ambari-singlenode sequenceiq/ambari:1.6.0 --tag ambari-server=true
+docker run -e BLUEPRINT=single-node-hdfs-yarn --link ambari-singlenode:ambariserver -t --rm --entrypoint /bin/sh sequenceiq/ambari:1.6.0 -c /tmp/install-cluster.sh
 	blueprint defaults
 	cluster build --blueprint single-node-hdfs-yarn
 
 http://10.1.50.250:49154/   //查看8080对应的端口
 admin/admin
+
+
+

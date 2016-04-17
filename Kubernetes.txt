@@ -1,0 +1,7 @@
+包含：
+节点,Pod(最小可创建，调度，管理的部署单元),Service,Replication Controller,Volume,Lable
+
+
+
+
+

@@ -1,0 +1,17 @@
+https://docs.docker.com/machine/
+
+curl -L https://github.com/docker/machine/releases/download/v0.6.0/docker-machine-`uname -s`-`uname -m` > /usr/local/bin/docker-machine && \ chmod +x /usr/local/bin/docker-machine
+
+docker-mechine version
+
+docker-machine create -d [infrastructure provider] [provider options] [machine name]
+docker-machine create -d virtualbox dev
+docker-machine ls
+docker $(docker-machine config dev) run busybox echo hello world
+docker-machine config dev
+
+#将dev的环境变量导入当前系统
+$(docker-machine env dev)
+docker-machine stop/start dev
+
+

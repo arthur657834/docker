@@ -1,0 +1,56 @@
+docker run -it -d --name shipyard-rethinkdb-data --entrypoint /bin/bash shipyard/rethinkdb -l
+docker run -it -P -d --name shipyard-rethinkdb --volumes-from shipyard-rethinkdb-data shipyard/rethinkdb
+docker run -it -p 8080:8080 -d --name shipyard --link shipyard-rethinkdb:rethinkdb shipyard/shipyard
+
+http://192.168.1.15:8080/ 
+admin/shipyard
+
+cli访问:
+docker run -it -v /Users/root/.boot2docker:/b2d --rm shipyard/shipyard-cli
+
+shipyard help 
+shipyard login
+shipyard containers 
+shipyard run --name nginx:1.7.6 --container-name web_test \ 
+--cpus 0.2 \ 
+--memory 64 \ 
+--type service \ 
+--hostname nginx-test \ 
+--domain example.com \ 
+--link redis:db \ 
+--port tcp/172.29.88.205:81:8081 \ 
+--port tcp/::8000 \ 
+--restart "on-failure:5" \ 
+--env FOO=bar \ 
+--label dev \ 
+
+shipyard events
+shipyard info
+shipyard logs <container_id> 
+shipyard destroy <container_id> 
+
+shipyard accounts
+shipyard engines
+shipyard remove-engine <container_id> 
+shipyard add-engine --id local \
+--addr http://172.17.0.2:2376 \
+--cpus 4.0 \
+--mem 8196 \
+--label dev \
+--label local
+
+创建密钥：
+shipyard add-service-key -d "test key"
+shipyard service-keys
+shipyard remove-service-key <container_id> 
+
+shipyard add-webhook-key --image ehazlett/go-demo
+shipyard webhook-keys
+shipyard remove-webhook-key <container_id> 
+
+
+
+
+
+
+

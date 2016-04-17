@@ -1,0 +1,91 @@
+安装方式1(没成功)：
+
+mkdir go
+export GOPATH=~/go
+go get -u -v github.com/docker/swarm
+
+Q1:imports golang.org/x/net/context: unrecognized import path "golang.org/x/net/context"
+mkdir -p golang.org/x/net/context
+cd golang.org/x/net/context
+wget https://github.com/golang/net/blob/master/context/context.go
+
+export PATH=$HOME/go/bin:$PATH
+swarm --version
+
+安装方式2：
+docker pull swarm
+docker run --rm swarm --version
+
+service docker stop
+docker daemon -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock &
+# 如果不加 则 使用 docker -H 192.168.1.15:2375 run --rm swarm
+
+方法1(未成功)：
+	#创建集群，获取cluster_id
+	docker run --rm swarm # help
+	docker run --rm swarm create
+	1ecc1f9d21683bcd32b92ab210feeec3
+	
+	#加入集群,IP取要加入的docker节点
+	docker run -d swarm join --addr=NODE_IP:2375 token://<cluster_id>
+	#节点没有添加成功
+	
+	#在集群管理机上
+	docker run -d -p 2376:2375 swarm manage token://<cluster_id>
+	docker run --rm swarm list token://<cluster_id>
+	
+	#非集群管理机
+	docker -H manage_IP:2376 info
+	#传闻是bug！
+
+
+方法2：
+	manage:
+	echo 192.168.1.15:2375 >> cluster
+	echo 192.168.1.16:2375 >> cluster
+	
+	docker run -d -p 2376:2375 -v $(pwd)/cluster:/tmp/cluster swarm manage file:///tmp/cluster
+	
+	docker run --rm -v $(pwd)/cluster:/tmp/cluster swarm list file:///tmp/cluster
+	
+	node:
+	docker -H manage_IP:2376 info
+
+Swarm调度策略
+	Swarm在schedule节点运行容器的时候，会根据指定的策略来计算最适合运行容器的节点，目前支持的策略有：spread, binpack, random.
+	
+	Random顾名思义，就是随机选择一个Node来运行容器，一般用作调试用，spread和binpack策略会根据各个节点的可用的CPU, RAM以及正在运行的容器的数量来计算应该运行容器的节点。
+	
+	在同等条件下，Spread策略会选择运行容器最少的那台节点来运行新的容器，binpack策略会选择运行容器最集中的那台机器来运行新的节点(The binpack strategy causes Swarm to optimize for the container which is most packed.)。
+	
+	使用Spread策略会使得容器会均衡的分布在集群中的各个节点上运行，一旦一个节点挂掉了只会损失少部分的容器。
+	
+	Binpack策略最大化的避免容器碎片化，就是说binpack策略尽可能的把还未使用的节点留给需要更大空间的容器运行，尽可能的把容器运行在一个节点上面。
+
+
+label是在启动docker daemon时指定的
+	--label=[]  
+
+
+Constraint Filter:
+	docker run -H manage_IP:2376 -name redis_083 -d -e constraint:label==083 redis
+	#在指定的lable的节点运行
+	
+Affinity Filter:	
+	docker run -H manage_IP:2376 --name redis_085 -d -e constraint:label==085 redis
+	docker run -H manage_IP:2376 --name redis_085_1 -d -e affinity:container==redis_085 redis
+	#即redis_085_1和redis_085在同一个node上执行
+	
+	docker run -H manage_IP:2376 --name redis1 -d -e affinity:image==redis redis
+	#-e affinity:image=image_name命令可以指定只有已经下载了image_name的机器才运行容器(You can schedule a container only on nodes where the images are already pulled)
+	
+	docker run -H manage_IP:2376 --name redis1 -d -e affinity:image==~redis redis
+	#在有redis镜像的节点上面启动一个名字叫做redis的容器，如果每个节点上面都没有redis容器，就按照默认的策略启动redis容器。
+	
+Port filter:
+	docker -H manage_IP:2376 run -d -p 80:80 nginx ?!!
+
+
+
+
+
