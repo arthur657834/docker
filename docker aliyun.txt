@@ -1,0 +1,7 @@
+先注册开发者帐号并认证
+pull 或 push 之前先登录
+docker login --username=arthur657834 registry.aliyuncs.com
+
+
+
+
