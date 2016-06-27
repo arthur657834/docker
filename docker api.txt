@@ -1,24 +1,10 @@
-docker -H 0.0.0.0:2376 -d & # -H 绑定
-docker -H tcp://127.0.0.1:2376 pull ubuntu # -H 连接端口
-
-docker -H 0.0.0.0:2376 -H unix:///var/run/docker.sock -d & # 绑定多接口
-
-使以上设置生效
-修改docker文件  DOCKER_OPTS
-或docker.service文件 ExecStart
-
-API种类：
-注册服务器
-dockerhub
-remote api
-
-curl -X GET http://localhost:2376/info
-
-pip install docker-py 
-
-import docker
-cli=docker.Client('tcp://127.0.0.1:2376')
-print cli.images()
-
-
-
+U2FsdGVkX1+/vBTULic49LpjwU33xK30nvgXKWZQYM87L59MXG2b4mXyONP1z6ka
+d8kC71SeWGHdOXd7dAWknvAE804nynvfkw1HQSSbczJ1lj6min5lp2DJCtTMIJtf
+sEKwrG8ZflAZDgc9QG1NnHRQL1IwC+e/W4Ck4cB1ped9RcMdqTJ91DgtUCfrw34h
+IMJgxTp8dFeAfRBhTGwQZjtzdVQkUXvUQ6ZXMGRP8KF0D153BYDXMlx7FdU/7u8+
+WH83LsxkOSRe2k5Cd6K18lHlFk9++dUalZ3iHsf4K524vWceXOG+m+3A2eGWJW+w
+cEu8rRHB0Fs/rHX/Dzo/9dKjBfYA6QKJV2wDMhJNjCB+gLKqhUoAOW1AANaGkGWF
+4OjW13d2Xtrsm/YxX5xcrDEv1XYvVEWzzQelM6+pA0FC7eOh92xHXaRx/DvxKMSf
+VxNKwRvSOz8ReGmZLQqPzj/S//eGnHx27ondVhhLRsyngNcGJIBlIpofiwup/0SE
+/l6y0KYDHBFnah3fNH6GGHN8zwDWmLOg8X2Zd9JRhFmMru7Qli16oCJno90GUjUn
+S9XQybyGBmlMg1rLeaKWtLCvSniS6aaTUWCAROTrXs/yyjwEz5P1deYOh4308H3y

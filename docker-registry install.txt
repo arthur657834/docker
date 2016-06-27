@@ -1,37 +1,22 @@
-服务端：
-方法1:
-yum -y install docker-registry
-
-curl http://127.0.0.1:5000
-
-server {
-    listen 8080;
-    server_name  10.1.51.125;
-
-    access_log  /var/log/nginx/private-registry-server.access.log  main;
-    error_log  /var/log/nginx/private-registry-server.error.log;
-	
-    location / {
-        proxy_pass  http://10.1.51.125:5000;
-		auth_basic "Account&Password";
-		auth_basic_user_file  /root/docker-registry;
-   }
-}
-
-htpasswd -c  /root/docker-registry test
-
-docker push 默认使用https
-vi /usr/lib/systemd/system/docker.service
-ExecStart=/usr/bin/docker daemon -H fd:// => ExecStart=/usr/bin/docker daemon --insecure-registry 10.1.51.125:5000 -H fd://
-
-service docker restart
-
-方法2:
-docker run -d -v /opt/registry:/var/lib/registry -p 5000:5000 --restart=always --name registry registry
-
-客户端:
-docker pull hello-world
-docker tag hello-world:latest 10.1.51.125:5000/hello-mine:latest
-docker push 10.1.51.125:5000/hello-mine:latest
-
-docker pull 10.1.51.125:5000/hello-mine:latest
+U2FsdGVkX18Uo3ZOH5hz6fh+2EZ9+6aIYLPEUVG5LA9Yv8uC6I2sU8wPoNgZ5seo
+deyLkjsxqc7CZVntBxhPMrKNHyN0xjNwgJkz1YCs9fIQXGqltR1+rqV7E4nkGwBK
+A+b0bxduO/rpHlaGztATF4Y/BaLINrQGZSx5EkeP1yIjFJ30q1pIPl8YxnOZB5hG
+gnFfM4gIb+wsyqn7ki1qj77vkKBgDwZQzLymosKhWIoPKUpWa0YkgWm5Qru9y33j
+16x9UmJqUNEgZnw+/L6RHia/YjSxZeXZPby8nJfUI6vFUsRj1IZ016zhwXVNYY0O
+mSywXcN7HDFoRjFV5bl0QpbWu7RNn7vJ8wyZ/fZK3b8JhDwaxs0iE6wpq2+tK883
+B/MTuiI1XmRl5BOwuOIzMNEsSlcl89f0GwFI1QHkId2pOtSA+eZcmUA4CD/Oaa8x
+RLE/tCdGy5SFDefonnsx4i6qinntwxZCVtglSL2XbdQ9wx/V098vzKNDYPy1m4y3
+6X7lLKLc0gill/AKIms8bngypDMSlT+PqgqLm8g+Up6t92HphoTq1A4SJTTnyt9d
+5WEUggCeJP/a2fPC9iOldtA73Uc+SMtCPyKgFB02Zt3deLdEGD1oFBOEy4rWUMTf
+D3sruoYak6Xz5B3zDuezo4ghBE2c1D91q3U7gvc5Hw1k6pttXdyyDW736O4t77xE
+zwaDBSuSX2uwRYsaWeDBf1QEDCz/Pphfld/p5mOEKF212VHWu9u3Bi2SLMr26wLL
+QFNwfoWgtaqVwGqDLhc21l8dS8R5lln4rTQB49/QeqlrGximf8Wv15j1EWS2m1U/
+YrZrEKaJaMaseGKnz390n1BIUfujVB0oxC3YQHzkXqRqrvg+cOehTZwECl1SO4vB
+tmibZl5QyAztYpdRA2DxyBP9SqO3Ee/++Q+eEfRKCMpecM50x/kfBXksHeDxKEKI
+AxuZ+Iiti7eQ/tEKUc1X+BfYU9dOBUWn1/VuVVjkOCL13yTgCcCSw7Er3LugjLWw
+dYXwIb1S0oAUyoU/y4jg5UFhqL19L3He4oEiaOWZt/oWO8t99Xc/ZgLKUXug/bNL
+41aAXKPp1/Fp7u5RUyc92O5o0F0Ror+GosZjm833r7c1L0D7xscvsslMNcymipsB
+tWfev+/Or5W+aZuIeX+VUdmcMEH8ztqVjo4kazmps05uAmbACgQR67a5Z48NVWlQ
+aX2TaeC3XWi1e5EtHwr4YOQCY/necg+J5HGHkCfHzQCE06b2+cz79v/lJWUycQ9c
+Y2S0JcGe1T0jVRdoFEcA+dHPogTnV03tMJmjXL1a1vjxlrbQZ8nfw7stlhF9IZAT
+mIwE3mDUat7Zn4dHTsi+hJNqiZxR+0QtBrKH5mfXzeV+950FteQFNOBgKDLUNJ5p

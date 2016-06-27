@@ -1,28 +1,13 @@
-1.cAdvisor：
-https://github.com/google/cAdvisor
-
-my understanding：docker stats 的 可视化展现
-
-docker run \
-  --volume=/:/rootfs:ro \
-  --volume=/var/run:/var/run:rw \
-  --volume=/sys:/sys:ro \
-  --volume=/var/lib/docker/:/var/lib/docker:ro \
-  --publish=8080:8080 \
-  --detach=true \
-  --name=cadvisor \
-  --privileged=true \
-  --volume=/cgroup:/cgroup:ro \
-  google/cadvisor:latest
-
-  --privileged=true --volume=/cgroup:/cgroup:ro radhat 和 centos 专有
-
-2.scout
-https://scoutapp.com/
-not free
-
-3.datadog
-https://www.datadoghq.com/
-一直收不到数据
-
-
+U2FsdGVkX1+uaQfoIKBEo0FmpAcWg8mF7qULFB2pP8i9QHa6iy9HTGe8g+NWDOVj
+N+JRTqHLlurhpimGSJSlu34NARQ6PRzF1HUDjxL94axyGaqLGHICNZhjZMYTula8
+AjY0FoXkVgj0jKkbyEgf7IKuV7IBoVGyITZZF/eNw1cOiXVVQF+BQqykuTWxBefA
+UNMMDD1BifOIZIwC7JBejiKC9umxdAJAcyvC3OqwC/mNjheJM43EEvE0xy8jbsxp
+TCQildABTNQvUn+mVtEtS4EOBxWO79YiMKs/mBQBGwNpVMYhTMrGFmrMHeRJ4GN2
+ceCy49flEHhcVq6Q2oy+ZaGOAfLofsbtmKhvX9W1qB6KMQ/tbzLUkdgQqmFCFyTn
+SF15hjXyjIdD0cNtQlDoU1+QxR4tcn3hJOAfmF5J/mXwW1ktylqFzPkYkZ1MgBfn
+O2/I3jTCZn9QGnM5Hi4nOar8xGkDrj7f2K8MHQG7j7qRsfbiH5cF0XsLpV72CQuK
+CpUGyOI0qkh6HGKmrc4gFUG2w8zxpjVpFzzW7ju/8OwajQydtSmrQs1jveJiLrnb
+JaUe3Zn5vl1kix9T7qU0kQsfKTJ5i2HgZrtOO9VUwXROlWFcGHXzCVouaiN1g2lX
++5YSLrKdyG5vATttvJXjT28PNRRaC/2RixcaoXmaKEmfDPX8ykUcxUnNmX1apshJ
+YsP0NJ3Uxg2HdNaBiPqDeBmFqho+siqlNM+Y2SVJzGQkcFlTG0ngmjKg0qUK6We/
+VucMqb3CRFCWcrw2EnQy/Q==

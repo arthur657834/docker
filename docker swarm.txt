@@ -1,91 +1,73 @@
-安装方式1(没成功)：
-
-mkdir go
-export GOPATH=~/go
-go get -u -v github.com/docker/swarm
-
-Q1:imports golang.org/x/net/context: unrecognized import path "golang.org/x/net/context"
-mkdir -p golang.org/x/net/context
-cd golang.org/x/net/context
-wget https://github.com/golang/net/blob/master/context/context.go
-
-export PATH=$HOME/go/bin:$PATH
-swarm --version
-
-安装方式2：
-docker pull swarm
-docker run --rm swarm --version
-
-service docker stop
-docker daemon -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock &
-# 如果不加 则 使用 docker -H 192.168.1.15:2375 run --rm swarm
-
-方法1(未成功)：
-	#创建集群，获取cluster_id
-	docker run --rm swarm # help
-	docker run --rm swarm create
-	1ecc1f9d21683bcd32b92ab210feeec3
-	
-	#加入集群,IP取要加入的docker节点
-	docker run -d swarm join --addr=NODE_IP:2375 token://<cluster_id>
-	#节点没有添加成功
-	
-	#在集群管理机上
-	docker run -d -p 2376:2375 swarm manage token://<cluster_id>
-	docker run --rm swarm list token://<cluster_id>
-	
-	#非集群管理机
-	docker -H manage_IP:2376 info
-	#传闻是bug！
-
-
-方法2：
-	manage:
-	echo 192.168.1.15:2375 >> cluster
-	echo 192.168.1.16:2375 >> cluster
-	
-	docker run -d -p 2376:2375 -v $(pwd)/cluster:/tmp/cluster swarm manage file:///tmp/cluster
-	
-	docker run --rm -v $(pwd)/cluster:/tmp/cluster swarm list file:///tmp/cluster
-	
-	node:
-	docker -H manage_IP:2376 info
-
-Swarm调度策略
-	Swarm在schedule节点运行容器的时候，会根据指定的策略来计算最适合运行容器的节点，目前支持的策略有：spread, binpack, random.
-	
-	Random顾名思义，就是随机选择一个Node来运行容器，一般用作调试用，spread和binpack策略会根据各个节点的可用的CPU, RAM以及正在运行的容器的数量来计算应该运行容器的节点。
-	
-	在同等条件下，Spread策略会选择运行容器最少的那台节点来运行新的容器，binpack策略会选择运行容器最集中的那台机器来运行新的节点(The binpack strategy causes Swarm to optimize for the container which is most packed.)。
-	
-	使用Spread策略会使得容器会均衡的分布在集群中的各个节点上运行，一旦一个节点挂掉了只会损失少部分的容器。
-	
-	Binpack策略最大化的避免容器碎片化，就是说binpack策略尽可能的把还未使用的节点留给需要更大空间的容器运行，尽可能的把容器运行在一个节点上面。
-
-
-label是在启动docker daemon时指定的
-	--label=[]  
-
-
-Constraint Filter:
-	docker run -H manage_IP:2376 -name redis_083 -d -e constraint:label==083 redis
-	#在指定的lable的节点运行
-	
-Affinity Filter:	
-	docker run -H manage_IP:2376 --name redis_085 -d -e constraint:label==085 redis
-	docker run -H manage_IP:2376 --name redis_085_1 -d -e affinity:container==redis_085 redis
-	#即redis_085_1和redis_085在同一个node上执行
-	
-	docker run -H manage_IP:2376 --name redis1 -d -e affinity:image==redis redis
-	#-e affinity:image=image_name命令可以指定只有已经下载了image_name的机器才运行容器(You can schedule a container only on nodes where the images are already pulled)
-	
-	docker run -H manage_IP:2376 --name redis1 -d -e affinity:image==~redis redis
-	#在有redis镜像的节点上面启动一个名字叫做redis的容器，如果每个节点上面都没有redis容器，就按照默认的策略启动redis容器。
-	
-Port filter:
-	docker -H manage_IP:2376 run -d -p 80:80 nginx ?!!
-
-
-
-
-
+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

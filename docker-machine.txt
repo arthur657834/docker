@@ -1,17 +1,13 @@
-https://docs.docker.com/machine/
-
-curl -L https://github.com/docker/machine/releases/download/v0.6.0/docker-machine-`uname -s`-`uname -m` > /usr/local/bin/docker-machine && \ chmod +x /usr/local/bin/docker-machine
-
-docker-mechine version
-
-docker-machine create -d [infrastructure provider] [provider options] [machine name]
-docker-machine create -d virtualbox dev
-docker-machine ls
-docker $(docker-machine config dev) run busybox echo hello world
-docker-machine config dev
-
-#将dev的环境变量导入当前系统
-$(docker-machine env dev)
-docker-machine stop/start dev
-
-
+U2FsdGVkX19m7/mj/0dsjCKkQ2CCOfoebQfSzHOUnAD+QeByIaIbHBm7EJG0QiWh
+M8ptZHVAWr6Ppz2sgDs6FHuU6c7d8Hjqea6JSxjxTKGjN7XJw7AtIUbrK9UCeCRQ
+Yzd4dZ7Bua91XkgBQRexTyQ92ULO0fxT0IT9WFLzNuAoyNkMVND+7G5hS22kCyUn
+tW6I/KqQIt8iRjV+wVard3cqqsU+AtF4HTGyULQPsUMkgzP/Aakr9V382oG5eg7F
+nfMiZwXBsMyNP/8ypAohraFNY57tknZ1IEZQ8gVPwzev+IDCswbd/Svq3OFPZJyE
+42jLg+QpQafQYVtZaEm4aZQmI4Kh4H22MuUyKYpok0JZiDUQv6Be+FN9GcLFN+7e
+deUWCaXw04MUizDERGK8jXsi1Lqz29hPnkPLDJF7IM7hTcPYJOrUfgLih7WUtMoE
+BWrSZO8p4X2pW4ggnatLDahEyJr1s23kc4hKpFmDEMDFFSgv+t505lmWHrhYkskI
+JQam509khVOSIyQ7o85oYtde6zvWyRrP7LJgONywx8f867JoMqoNlI3ogyMb9LNJ
+2GIobe5t0+SZYQxDNHX20wP37cUhL9XKJ7qkMmUxGii/6RbpMpAtyph8XPoHEh74
+QfWLXFwJgAqECQjUO/ZBZNjzAAKBV1R89O/t36sub5325zde4Ko9K8m646WCDKEe
+cIBwrJBq2ImUMRZXZuC/mr2x6/elfsMPSERoqwaV6x2oO7H/6J/pk5l/LaNO8C8K
+vWvEtjcV71S0TjVP56ly3w==

@@ -1,171 +1,121 @@
-docker安装:
-	curl -sSL https://get.docker.com/ | sh 
-
-启动:
-	service docker start
-	
-usermod -aG docker username
-这样非root用户也能使用docker
-
-docker run hello-world
-docker -v
-docker search tutorial
-docker pull learn/tutorial 
-docker run learn/tutorial echo "hello word"
-docker run learn/tutorial apt-get install -y ping
-docker ps -l //-n=2 最后创建的两个容器
-
-docker run<=>docker create + docker start
-docker stop
-docker create ubuntu:14.04
-docker rm 1bd40561d3de 
-docker rm $(docker ps -a -q)//删除所有容器
-docker rmi $(docker images | grep none | awk '{print $3}' | sort -r) #删除所有镜像
-
-docker attach 778d0b719b68
-为后台容器添加交互窗口
-
-创建交互型容器
-docker run -i -t --name=inspect_shell ubuntu /bin/bash // -i interactive -t terminal
-创建后台型容器
-docker run --name=daemon_while -d ubuntu /bin/sh -c "while true;do echo hello" //-d 开启Daemon模式。
-	--restart=always
-	--restart=1 退出码为1重启
-	--restart=on-failure:5 退出码非0尝试重启5次
-
-docker 保存镜像:
-	docker commit 91 learn/ping 91为 docker 的镜像ID
-	docker commit -m="message" --author="lj" 91 lj/mysql:v1 // repository/images:tag
-
-获取docker的详细信息:
-	docker inspect 778d0b719b68 //查看容器配置
-	docker inspect --format='{{.Id}} {{.Name}}' 778d0b719b68 //json 显示特定值
-
-当前镜像信息:
-	docker images
-
-docker发布:
-	docker push learn/ping
-	docker push arthur657834/ljtest //push到自己的docker仓库 rename your repository to <user>/<repo>
-	
-docker logs -f 778d0b719b68 --tail=5 -t
-docker top 778d0b719b68
-docker stats 778d0b719b68 //docker 资源使用状况
-
-docker exec -d 778d0b719b68 touch /root/q.txt //在docker中执行命令
-docker exec -t -i 778d0b719b68 /bin/bash //进入shell交互界面
-
-导入导出镜像
-docker export 778d0b719b68 > lj.rar
-cat lj.rar | docker import - import:container // 或docker import url res:tag
-
-docker save debian02 >/root/debian02.tar
-docker load < debian02.tar
-
-使用dockerfile创建(跟makefile差不多)
-docker build -t lj/mysql:v1 .
-docker build -t lj/mysql:v1 git地址 //docker build -t sequenceiq/hadoop-docker:2.6.0 github.com/minimicall/hadoop-docker.git
-	onbuild:新镜像指定此镜像为父镜像时执行
-
-docker tag 85d54f4ba0cc arthur657834/ljtest
-修改REPOSITORY名
-
-自动化构建：
-hub.docker.org上新建repository(create automated repository)  关联github帐号下的docker,设置相关配置，然后当github上的代码更新之后会自动打包生成新的镜像
-
-docker run -d -P training/webapp python app.py //-P 随机映射一个49000-49900的端口 -p 81:5000 指定映射端口 127.0.0.1:81:5000 127.0.0.1::5000
-
--v /webapp //创建数据卷并挂载到容器 docker inspect suspicious_hoover
-docker run -v /webapp -d -P training/webapp python app.py // 宿主机的路径 /var/lib/docker/volumes/
-
--v `pwd`:/webapp //指定当前目录为webapp为挂载目录,绝对路径
-docker run --name webapp -v `pwd`:/webapp -d -P training/webapp python app.py //-v `pwd`:/webapp:ro 只读
-dockerfile不支持目录挂载
-
--v ~/test.txt:/test.txt //挂载文件
-
-注意挂载之后的文件在容器及宿主机之间同步修改
-
-docker run -d -v /dbdata --name dbdata training/postgres //创建数据卷容器
-
-docker run -d --volumes-from=dbdata --name db1 training/postgres //引用数据卷,可以多次引用
-
-docker run -d --volumes-from=db1 --name db2 training/postgres //级联引用
-
-注意:引用的数据卷一旦声明，它的生命周期就跟它的容器(dbdat)无关了
-删除数据卷:删除所有引用的容器，并在删除最后一个时加-v参数(docker rm -v db2)
-
-备份数据卷:
-docker run --volumes-from=dbdata -v $(pwd):/backup ubuntu tar cvf
-原理:新建容器挂载数据卷,映射数据卷
-
-恢复数据卷:
-docker run --volumes-from=dbdata2 ubuntu tar cvf
-docker run --volumes-from=dbdata2 -v $(pwd):/backup ubuntu tar xvf
-
-容器连接:
-docker run -d --name dbdata training/postgres
-docker run --name web -d -P --link dbdata:db training/webapp python app.py
-
-
-dbdata提供的服务:
-
-1.环境变量
-docker run --rm --name web2 --link dbdata:webdb training/webapp env
-
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-HOSTNAME=e1f0147bbc90
-WEBDB_PORT=tcp://172.17.0.2:5432
-WEBDB_PORT_5432_TCP=tcp://172.17.0.2:5432
-WEBDB_PORT_5432_TCP_ADDR=172.17.0.2
-WEBDB_PORT_5432_TCP_PORT=5432
-WEBDB_PORT_5432_TCP_PROTO=tcp
-WEBDB_NAME=/web2/webdb
-WEBDB_ENV_PG_VERSION=9.3
-HOME=/root
-
-WEBDB开头的属性
-
-2./etc/hosts
-docker run -it --rm --name web3 --link dbdata:webdb training/webapp /bin/bash
-cat /etc/hosts
-127.0.0.1       localhost
-::1     localhost ip6-localhost ip6-loopback
-fe00::0 ip6-localnet
-ff00::0 ip6-mcastprefix
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-172.17.0.2      webdb 642ae88af027 dbdata
-172.17.0.4      ff39a846bbfe
-
-代理连接：
-ambassador模式实现跨主机连接
-redis-client->ambassador1->ambassador2->redis-server
-
-redis-server
-docker run -d --name redis crosbymmichael/redis
-
-ambassador2
-docker run -d --name redis crosbymmichael/redis
-
-ambassador1
-docker run -d --name redis_ambassador --expose 6379 -e REDIS_PORT_6379_TCP=tcp://192.168.1.53:6379 svendowideit/ambassador 
-
-redis-client
-docker run -it --rm --name redis --link redis_ambassador:redis
-
-
-定制镜像需要制作运行脚本时,不能在脚本中包含 &！！！！否则导致镜像知道到该行时即退出
-
-docker port ubuntu 3306 //查看3306 到主机的端口映射
-
-阿里云docker开发：
-创建ecs时可以选择支持docker的镜像,开机docker daemon启动
-
-
-
-
-
-
-
-
+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
+CUcIXMZdxN0=

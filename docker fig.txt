@@ -1,247 +1,109 @@
-pip install -U fig
-
-ex1:
-vi fig.yml
-web:
-  image: ubermuda/pagekit
-  ports:
-    - 80
-  links:
-    - db:pagekit_db_1
-  volumes_from:
-    - data
-db:
-  image: orchardup/mysql
-  environment:
-    MYSQL_ROOT_PASSWORD: changethis
-    MYSQL_DATABASE: pagekit
-data:
-  image: busybox
-  command: /bin/true
-  volumes:
-    - /pagekit/storage
-    - /pagekit/app/cache
-	
-fig up
-
-ex2:Rails开发环境
-vi Dockerfile
-FROM ruby
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev
-RUN mkdir /myapp
-WORKDIR /myapp
-ADD Gemfile /myapp/Gemfile
-RUN bundle install
-ADD . /myapp
-
-rails取最新版本 http://guides.rubyonrails.org/
-vi Gemfile
-source 'https://rubygems.org'
-gem 'rails', '4.2.6'
-
-vi fig.yml
-db:
-  image: postgres
-  ports:
-    - "5432"
-web:
-  build: .
-  command: bundle exec rackup -p 3000
-  volumes:
-    - .:/myapp
-  ports:
-    - "3000:3000"
-  links:
-    - db
-
-fig run web rails new . --force --database=postgresql --skip-bundle
-编辑一下Gemfile文件，去掉therubyracer包的注释, 让Rails依赖的Javascript的运行时环境。
-gem 'therubyracer', platforms: :ruby
-
-fig build
-fig up
-fig run web rake db:create
-localhost:3000
-
-ex3:Django开发环境
-vi Dockerfile
-FROM python:2.7
-ENV PYTHONUNBUFFERED 1
-RUN mkdir /code
-WORKDIR /code
-ADD requirements.txt /code/
-RUN pip install -r requirements.txt
-ADD . /code/
-
-vi requirements.txt
-Django
-psycopg2
-
-vi fig.yml
-db:
-  image: postgres
-web:
-  build: .
-  command: python manage.py runserver 0.0.0.0:8000
-  volumes:
-    - .:/code
-  ports:
-    - "8000:8000"
-  links:
-    - db
-
-fig run web django-admin.py startproject figexample .
-
-修改 figexample/settings.py 的DATABASES =
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'HOST': 'db',
-        'PORT': 5432,
-    }
-}
-
-fig up
-fig run web python manage.py syncdb
-
-localhost:8000 
-
-ex4:Wordpress开发环境
-curl https://wordpress.org/latest.tar.gz | tar -xvzf -
-mkdir wordpress
-cd wordpress
-
-vi Dockerfile
-FROM stackbrew/ubuntu:13.10
-RUN apt-get update && apt-get install php5 php5-mysql -y
-ADD . /code
-
-vi fig.yml
-web:
-  build: .
-  command: php -S 0.0.0.0:8000 -t /code
-  ports:
-    - "8000:8000"
-  links:
-    - db
-  volumes:
-    - .:/code
-db:
-  image: mysql
-  environment:
-    MYSQL_DATABASE: wordpress
-    MYSQL_ROOT_PASSWORD: wordpress
-
-修改wp-config.php：
-<?php
-define('DB_NAME', 'wordpress');
-define('DB_USER', 'root');
-define('DB_PASSWORD', 'wordpress');
-define('DB_HOST', getenv("DB_1_PORT_3306_TCP_ADDR") . ":" . getenv("DB_1_PORT_3306_TCP_PORT"));
-define('DB_CHARSET', 'utf8');
-define('DB_COLLATE', '');
-
-define('AUTH_KEY',         'put your unique phrase here');
-define('SECURE_AUTH_KEY',  'put your unique phrase here');
-define('LOGGED_IN_KEY',    'put your unique phrase here');
-define('NONCE_KEY',        'put your unique phrase here');
-define('AUTH_SALT',        'put your unique phrase here');
-define('SECURE_AUTH_SALT', 'put your unique phrase here');
-define('LOGGED_IN_SALT',   'put your unique phrase here');
-define('NONCE_SALT',       'put your unique phrase here');
-
-$table_prefix  = 'wp_';
-define('WPLANG', '');
-define('WP_DEBUG', false);
-
-if ( !defined('ABSPATH') )
-    define('ABSPATH', dirname(__FILE__) . '/');
-
-require_once(ABSPATH . 'wp-settings.php');
-
-fig up
-
-localhost:8000 
-
-flocker跨主机fig：
-flocker-cli安装：
-yum -y install python python-devel python-virtualenv @buildsys-build
-vi install.sh
-#!/bin/bash
-virtualenv --python=/usr/bin/python2.7 flocker-tutorial
-flocker-tutorial/bin/pip install -U pip
-flocker-tutorial/bin/pip install --quiet https://storage.googleapis.com/archive.clusterhq.com/downloads/flocker/Flocker-0.3.2-py2-none-any.whl
-
-
-cp flocker-deploy /usr/bin/
-cp flocker-reportstate /usr/bin/
-flocker-deploy --version
-
-flocker-node安装：
-yum -y install http://archive.zfsonlinux.org/epel/zfs-release.el7.noarch.rpm
-yum install -y zfs
-
-yum -y install  kernel-devel
-
-yum install -y https://clusterhq-archive.s3.amazonaws.com/centos/clusterhq-release$(rpm -E %dist).noarch.rpm
-yum install -y clusterhq-flocker-node clusterhq-flocker-docker-plugin
-
-curl -sSL https://get.docker.com/ | sh
-systemctl enable docker.service
-systemctl start docker.service
-
-mkdir /opt/flocker
-truncate --size 10G /opt/flocker/pool-dev 
-zpool create flocker /opt/flocker/pool-dev 
-
-ssh-keygen
-ssh-copy-id root@192.168.1.16
-
-vi fig.yml
-elasticsearch:
-  image: clusterhq/elasticsearch
-  ports:
-    - "9200:9200"
-  volumes:
-    - /var/lib/elasticsearch
-
-logstash:
-  image: clusterhq/logstash
-  ports:
-    - "9200:9200"
-  links:
-    - elasticsearch:es
-
-kibana:
-  image: clusterhq/kibana
-  ports:
-    - "80:8080"
-
-vi depolyment.yml
-"version": 1
-"nodes":
-  "192.168.1.16": ["logstash","kibana"]
-  "192.168.1.17": [elasticsearch]
-
-flocker-deploy depolyment.yml fig.yml 
-
-数据迁移17->18：
-vi depolyment.yml
-"version": 1
-"nodes":
-  "192.168.1.16": ["logstash","kibana"]
-  "192.168.1.17": []
-  "192.168.1.18": ["elasticsearch"]
-
-flocker-deploy depolyment.yml fig.yml 
-
-遇到问题：  
-执行flocker-deploy depolyment.yml fig.yml 时出现
-bash: flocker-reportstate: command not found
-
-将flocker-reportstate 加至/usr/bin下依旧未能解决
-
-
-
+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

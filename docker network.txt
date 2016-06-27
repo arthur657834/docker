@@ -1,76 +1,47 @@
-docker run --name test -v /root/ljtmp:/var/cache/yum/x86_64/7/base/packages/ -it centos
-docker run --name test1 --net=none -v /root/ljtmp:/root --privileged=true -it centos
-
-ip命令安装
-rpm -ivh /root/libnfnetlink-1.0.1-4.el7.x86_64.rpm
-rpm -ivh /root/libmnl-1.0.3-7.el7.x86_64.rpm
-rpm -ivh /root/libnetfilter_conntrack-1.0.4-2.el7.x86_64.rpm 
-rpm -ivh /root/iptables-1.4.21-16.el7.x86_64.rpm 
-rpm -ivh /root/iproute-3.10.0-54.el7.x86_64.rpm 
-
-ip netns add net0
-ip netns exec net0 `command`//ip netns exec net0 bash
-ip netns list
-ip link list
-
-ip link add type veth <=> ip link add A type veth peer name B
-ip link set veth0 netns net0
-ip link set dev veth1 name net1-bridge netns net1
-ip netns exec net0 ip link set veth0 up
-ip netns exec net0 ip address add 10.0.1.1/24 dev veth0
-
-网络类型：
-none
-bridge
-host
-container:containerid
-
-实例：
-
-     bridge 10.0.1.0/24
-net0(.1)            net1(.2)
-
-创建虚拟网络环境并且连接网线
-ip netns add net0
-ip netns add net1
-ip netns add bridge
-ip link add type veth
-ip link set dev veth0 name net0-bridge netns net0
-ip link set dev veth1 name bridge-net0 netns bridge
-ip link add type veth
-ip link set dev veth0 name net1-bridge netns net1
-ip link set dev veth1 name bridge-net1 netns bridge
-
-在bridge中创建并且设置br设备
-ip netns exec bridge brctl addbr br
-ip netns exec bridge ip link set dev br up
-ip netns exec bridge ip link set dev bridge-net0 up
-ip netns exec bridge ip link set dev bridge-net1 up
-ip netns exec bridge brctl addif br bridge-net0
-ip netns exec bridge brctl addif br bridge-net1
-
-然后配置两个虚拟环境的网卡
-
-ip netns exec net0 ip link set dev net0-bridge up
-ip netns exec net0 ip address add 10.0.1.1/24 dev net0-bridge
-
-ip netns exec net1 ip link set dev net1-bridge up
-ip netns exec net1 ip address add 10.0.1.2/24 dev net1-bridge
-
-测试：
-ip netns exec net0 ping -c 3 10.0.1.2
-
-lldp [ Link Layer Discovery Protocol ]
-lldpcli show neighbors
-https://github.com/vincentbernat/lldpd
-
-
-网络命名空间：
-mdkir -p /var/run/netns/
-container pid => docker inspect --format='{{.State.Pid}}' container id
-ln -s /proc/container pid/ns/net /var/run/netns/container pid
-
---icc=true ACCEPT
---icc=true DROP
-
-
+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

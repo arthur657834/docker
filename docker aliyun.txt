@@ -1,7 +1,3 @@
-先注册开发者帐号并认证
-pull 或 push 之前先登录
-docker login --username=arthur657834 registry.aliyuncs.com
-
-
-
-
+U2FsdGVkX1/WIo7EHz6euQtkbn1ZLoOektKWzE7jMt3mkrGliq5b9MugkpL27aO7
+o0KEEZ7xiA5TnZqg7/ersj35hFoY2QG70wP+qpvv1r+L7jbBpKXCvRETBu9uQ6Jc
+WHyUY8UPQ5MQY8vgLWmQsx2Jn1P7xNjH5agzdouCsB28UDFPbzM0IoX/Ow0obA1e
