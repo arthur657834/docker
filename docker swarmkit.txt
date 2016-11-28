@@ -1,0 +1,22 @@
+docker swarm init
+
+docker swarm join \
+    --token SWMTKN-1-4pr70fuxb4lxk87hx86dw5dgm2kqrevzid2k57689vptmv76in-8i4kq65ouo0v3g7vc1bbbrakk \
+    10.1.51.200:2377
+	
+docker node ls
+
+docker swarm leave
+重新加入之后节点ID换了
+
+docker service create --name test_service --replicas 2 busybox ping 10.1.51.200
+docker service ls
+docker service inspect test_service
+docker service update --replicas 3 test_service
+
+
+
+docker node promote/demote ID 升/降级
+
+	
+	

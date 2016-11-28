@@ -1,3 +1,7 @@
-U2FsdGVkX186R/2qM7lkqHjtHl2emil68IdPz8BUG8fePxh6YWoTgLn1CGtH2wOK
-xGayTYt695blO2F/sajKllVqjUzwxC1WNdLufP6O7JZ8CSwBQR18j6Rijm8lxT6v
-/J1JIorUedhb2w/AIhxswgPcS9bOkErbIjK61LsXv8u2jsMzKbBXNbdlECXapY0D
+包含：
+节点,Pod(最小可创建，调度，管理的部署单元),Service,Replication Controller,Volume,Lable
+
+
+
+
+

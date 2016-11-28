@@ -1,18 +1,22 @@
-U2FsdGVkX1+XCqtbbswU/pnhjM6q9FvGntd7WQC4LY1SwOdSpukoDucaqGE/iKL9
-BDyzMCu+QBB3JEMKhrzvTmvAf3K6fscIjDYmDiAbFcgeN4Q54tb9+Y/2z6XLKNO0
-43qX5jKJ7psjqRLPg/1INQBEHydeyxamLHEgjg7ad8PEqVpplGFwcD5I60m58V6O
-sr/qJBK9Lbw5OncX7fe8W98xjnqhUBlSsTt/UJcthznrpoUXmb7xmQj5BOVkTFS8
-E+oaJF1fkNZJwr202JHu1LtV8uERFTwBiVOJS6b0S6sFv2yUC/V1157Ayf8B/Zoo
-6tjmEn6nezginTfaHo/Q7ToqB+ftEz6DP8rNhb1xbhn3mdhf48D9w4q1RY7VJcHD
-v3SqkLwVC0Yde5Sln/VKM6hLU1SOkpokazmtuxDol6IrlX5OzGLcOw8EhZVXAmr3
-+Oa8kl/crPegTcBwSMGxLV22flEp5/ff7dbKRYCj3bwAWAyPdfyu/SmMGiVWKyFI
-Pofx3IVrqlFvyawA/pTccPGeCfNrjNq4mlny9XBGk+cTw128CNfLpnRU6zn0Iwpn
-dNwiS72cHaKtlTN2Ujj5EBPa8j6/RoAMz+3NuWAUMkY2DelYufxBQy0QQ3D89YlP
-3hQkQhf3Q58EG7JMhPSNJxoDJHEvzOpoPX8HcZMq5Dme0lLkCdnEK8XIvSo2as/n
-BsmjU4EcHlQLvhG5PfnYJP9bBOzxAgSC9X3nEArmlG0SW9Hm7STh9SeB/MxtUGBc
-+7eWTgvBD+UqBEfh94YqviO68QIYhyhNnMWGSSzMfaXemDdYwX8PDpMxxThtGv65
-gwGSevJybtrbrCYGRm2J8IQbGS+weMetpvtDyWLloyEHr2rlsY2aHWrwYGYaWktI
-5e8aEGuFBVGHozT8sokxl99fZdiI0XNIlKHssKusQV8i7yC2RR29N0GBYzeJ8qjl
-wbT+DuIpz7tZI1nZMmmwA4ZotzKDp19uxdughMYXoK+AXTOTwljapqYEVN0SHO0d
-p1R2AW15o0sM7cQAs6xc9ToS1c7ZlpaA7ablGqMGA7W8OAkkoh4SuhXO2ePacM7X
-pE1GXmYnpnuVb+vrPdk17tHH1VVOOmlYN141NL4fTZS+WYGAo+Pp8Q==
+docker pull sequenceiq/hadoop-docker
+docker build -t sequenceiq/hadoop-docker:2.6.0 github.com/minimicall/hadoop-docker.git
+
+
+docker run -it sequenceiq/hadoop-docker /etc/bootstrap.sh -bash
+cd /usr/local/hadoop
+bin/hadoop jar 
+bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.0.jar grep input output 'dfs[a-z.]+'
+bin/hadoop dfs -cat output/*
+
+
+docker pull sequenceiq/ambari:1.6.0
+docker run -d -p 8080 -h 127.0.0.1 --name ambari-singlenode sequenceiq/ambari:1.6.0 --tag ambari-server=true
+docker run -e BLUEPRINT=single-node-hdfs-yarn --link ambari-singlenode:ambariserver -t --rm --entrypoint /bin/sh sequenceiq/ambari:1.6.0 -c /tmp/install-cluster.sh
+	blueprint defaults
+	cluster build --blueprint single-node-hdfs-yarn
+
+http://10.1.50.250:49154/   //查看8080对应的端口
+admin/admin
+
+
+

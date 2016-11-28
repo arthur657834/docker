@@ -1,16 +1,23 @@
-U2FsdGVkX18h5X55MfyfbFD6PJT/dpYjzdsrJIa/vKCA+wqzUhryNz2iaWLH1AOU
-BskyP/cu4Glm+9Jw2UGlGKGFZeXpvJ7bQZNIPTxi2gf+8FiHgjDTA5hu162UuLSd
-t6hVt4hynoiGFr2gJQJU39KuCEc5H5Xv3SuWq2nzF85+OZTQb4IBdBFizUHBR7I0
-vlh7hTYLt2S6SksU1bA3usORqmdUpty82OISRG7ZnroUKRlPccXyq1tqtQ95Q2gF
-rVpbBiIabOc7pcA6MMkZywWwu+fNyU39VhvR5MxdjhSwKuhaO9Nq3AsCsMfFxkiI
-Nf+iK1gjkW2v8lmOHfxTmK2C8QNG/JFXYpq0/ushRu0yRYDKL4Qdlvzq8G32+TRY
-4V7Y5R9mvxj00O8ZAALQPxt2jBLQHlpRZaM9hCLGHvVBXJbq3V2d3geOMk1Z/HFG
-rkvRpAAqRwNdZIQFNYfifo5PKqLIBqyAjm3rnEZakWP3eCnXzVcHZrDD/vv1anHi
-k/kF9Bru4DAXlLy9Dob4KCHnoFCwrqf7/hFR02ef8WNM2GdrsVoinuL1No8V79oP
-jVluRoNbvZ3+3RpHrYffrsgVwF5tkdBrnyU/ipdt762gEUUjy3mU9oNQ6bFubDqr
-MokCzN45mSF9/DcTIf9P2ZCLT+88btL+iXrXcum/LMtEj7Xe/okaQeKrP7iWX9yn
-mSi1vupEdcVIoyLvXoS+dvwxcoUWrLqI4JMF0JdrORDVNYtq7obwALFeYKXeKpzh
-D9xlonLdOvdAiMX/kVEigSvLfsNBV0K0J15SEAUYgNh2rOrLCbjhzf+282qyJCf8
-oIvgcknpyhusic261WwyunZrTN4pKS+6Ma1FommOkodS7EodA/cCvmDT8GrVHXTK
-XRWT9WORHlOYOYxcmUBNmyFsiA0/5bUpGD3iWRyMQ8qO2/yeTOm4umCjXAOQXKlr
-nF7pRLEWyiKgeJ1AXr98VW9ewSWbgbUKkClGD1u0EVgnKBLoCTQiXg==
+yum -y install bridge-utils
+brctl show
+
+docker run --name test --net=none --privileged=true -it centos //--privileged=false         Give extended privileges to this container
+
+-v /var/cache/yum/x86_64/7/base/packages/:/root
+
+cat /etc/hosts 查看容器id
+
+ovs-vsctl add-br br0
+ovs-vsctl show
+
+wget https://github.com/openvswitch/ovs/raw/master/utilities/ovs-docker
+chmod a+x ovs-docker
+./ovs-docker add-port br0 eth0 <CONTAINER_ID> //eth0为容器中网卡名字
+./ovs-docker del-port br0 eth0 <CONTAINER_ID>
+
+./ovs-docker add-port br0 eth0 9bc4cb6fbb0b
+ifconfig eth0 172.17.0.2/24  //注意路由,最好要与docker0 的IP地址处于同一网段
+ifconfig br0 172.17.0.3/24
+
+route add default gw 172.17.0.3 //至此test可以正常上网
+

@@ -1,28 +1,56 @@
-U2FsdGVkX192kdxM7PjwVlk3PERETsMxhFUXFpqVqt5cPWaXyYHbA5nCHS8wH4w3
-1l2eFs3qNZ3V1Swu4tU9sxd6Tz+d5WvyyG30aF73p9EAbu+AzwSxfG1a7MNhwEL6
-GsJtNXZePDFvWP3bkRhqN0rqpQnztWXXl1U88FVpAOsDn9iSwi+5edIax4Dmt1kb
-hs+RGIrJxYGLktgH/1VtOP8vmik/L0MlD5advNGGKJYyQMXxFhgqrl2s8VBBgb9o
-EJ4aMdrfkIfRQUNEhL74F9cRFpKEPvUXmiNHWw0vhUKMoi97QQLlsdVljTzEuTf6
-Z+BpC3nPbfGMU4VjhHJepP6D8moNtYQB1SyJrzkll8UaxMmR7PEpWGQB9FBVBM5v
-HAQGP55azDC8YiK7MpmCCDUZITRLsNpzNzbl6/Ew7Z2TXurogohCaDvysCsL4a+c
-6MA7wLrrrUJ3c0ruh8DCFR/4ZWgsFJa8iMGgCRhIT4Ss5QhzphjWk3183fTMVCvi
-rbua/fJCOZOhvwpL62iJ+un5k/j95cj+SRFMDClpcwnpOuKTBnZ1XwmAm3IHNCOg
-5ZEsq6sZhq1is2Rjx5UgRYcLVT8z5gBrPjmkR616Ea2PzVFfoNUJsjCXkSMJZUR1
-qHHtNkKFZV8kgNQsPKeW2ToCKK+yLfQKB0iBXRf6mTHThYcdC+ZAxqEdCnwmu840
-IaqUVYLeGs8D0oPvvWtUs7EECVZuHYsxPq45Mk1sHn63LLDJTu5jnZXnpDZnDElu
-jyUZJPs1tFidI3POK1awXan0KZ+lOWA/8Bkfo8qXLTRhVgIBlAuqzuaHLUr7WB1x
-k/9BQZn6vIcbwgvkkWmt7OgLrkTB5c+rz/XXyXoetkAfO/23sG7E/etayJUUmKk5
-h63AOvVp+CsXM1sCKSq34FMJndjN9QU49pN2zHjSE4g4JqJK0MQRXjk7ONUxu0kn
-xSxXahsVaKQrD5FRej/qjGg3P6+GPtfPxpWviRxkp8/sLuCroB21EoO0OcpaIVXs
-SjG79aiHM4qa6eDeQy7Wg4BnD0KZXVw6q4QefxlXgz/uoS/Qq9RFxXiruF/Q0bUg
-vBtshLb9kyucgEZboGDaBMF98QRxv7o8I6ZTQCYkBCjeyU7dPZy43Cv21CMlSD6p
-L5XMRadhReUJXWRzvpdIVXJw7VpoMrwHNk02K8NdeJle+Fkr/nibhJEp457H2aSi
-ulLrN4UcmS/iVJMzXSq6Ucd1Ky92r7AA4q+XqHSrj2GclP2SHpbQitEtleSkaRuu
-qs7Yw5zpckEi0hQacCjdi3DPWkPo9BUw56iX2KMUYCoWJgmXS5ZVJlGKFQw6THJJ
-CFpw3odAZ49/wxowAJ2tCi0vLs4CLgUd2drDWIM9nlr2F3tj1RMiBq4ShYLAQetn
-prmlHBWGtwTCG8AzWu2U881OLvy3AFeCYoCXaxtroehq0yozHfEESlg0KH04TGPJ
-QbZwyz6Wx3654ODiUsXKQ7qNZJGTkOgxUE+89UsjwMAxHkjDRYhtdzsCO9V3clhc
-LjSOsZUnUORQZ0m7l0tde8jZtCe5tZwnpVDb9GV9XfJRy4z4+H4Hl/rutunkgHX7
-xsLjJ8voVQglk5bdua7M0iE6fTZnYZQOJ8PvCXbsmsQOpQcMLu18g9wohB8lL7TR
-E2ua2wHD4tW7DHxTew7s/L+vMYR/gAOVLf5eGze/CCEiViAw4i3YkPOxW2x9avCl
-gDQ33gAp3//bI7zkvQ+QYQHe0hcuKi+jWgeEeCiEyhA=
+docker run -it -d --name shipyard-rethinkdb-data --entrypoint /bin/bash shipyard/rethinkdb -l
+docker run -it -P -d --name shipyard-rethinkdb --volumes-from shipyard-rethinkdb-data shipyard/rethinkdb
+docker run -it -p 8080:8080 -d --name shipyard --link shipyard-rethinkdb:rethinkdb shipyard/shipyard
+
+http://192.168.1.15:8080/ 
+admin/shipyard
+
+cli访问:
+docker run -it -v /Users/root/.boot2docker:/b2d --rm shipyard/shipyard-cli
+
+shipyard help 
+shipyard login
+shipyard containers 
+shipyard run --name nginx:1.7.6 --container-name web_test \ 
+--cpus 0.2 \ 
+--memory 64 \ 
+--type service \ 
+--hostname nginx-test \ 
+--domain example.com \ 
+--link redis:db \ 
+--port tcp/172.29.88.205:81:8081 \ 
+--port tcp/::8000 \ 
+--restart "on-failure:5" \ 
+--env FOO=bar \ 
+--label dev \ 
+
+shipyard events
+shipyard info
+shipyard logs <container_id> 
+shipyard destroy <container_id> 
+
+shipyard accounts
+shipyard engines
+shipyard remove-engine <container_id> 
+shipyard add-engine --id local \
+--addr http://172.17.0.2:2376 \
+--cpus 4.0 \
+--mem 8196 \
+--label dev \
+--label local
+
+创建密钥：
+shipyard add-service-key -d "test key"
+shipyard service-keys
+shipyard remove-service-key <container_id> 
+
+shipyard add-webhook-key --image ehazlett/go-demo
+shipyard webhook-keys
+shipyard remove-webhook-key <container_id> 
+
+
+
+
+
+
+
