@@ -63,5 +63,3 @@ systemctl enable kubelet kube-proxy docker
 systemctl start kubelet kube-proxy docker
 
 kubectl get nodes
-
-
