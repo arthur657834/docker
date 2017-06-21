@@ -5,9 +5,9 @@ yum install -y docker-ce 用docker-ce这个版本不然会有问题
 先从etcd开始，简单说就是"distributed key value store"。
 
 etcd集群的3种方式:
-static
-etcd discovery
-DNS discovery
+* static
+* etcd discovery
+* DNS discovery
 
 Static:
 ```shell
