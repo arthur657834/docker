@@ -39,7 +39,7 @@ systemctl enable kube-apiserver kube-scheduler kube-controller-manager
 systemctl start kube-apiserver kube-scheduler kube-controller-manager
 
 curl http://10.1.50.141:8080/
-http://10.1.50.141:8080/swagger-ui/
+curl http://10.1.50.141:8080/swagger-ui/
 kubectl get pods
 
 
@@ -62,4 +62,5 @@ KUBELET_ARGS=""
 systemctl enable kubelet kube-proxy docker
 systemctl start kubelet kube-proxy docker
 
+master:
 kubectl get nodes
