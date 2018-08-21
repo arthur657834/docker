@@ -12,6 +12,9 @@ ETCD_ADVERTISE_CLIENT_URLS="http://10.1.50.144:2379"
 systemctl enable etcd
 systemctl start etcd
 
+curl -v http://127.0.0.1:2379/version
+
+etcdctl ls 
 etcdctl member list
 etcdctl mk /coreos.com/network/config '{"Network":"172.17.0.0/16"}'
 etcdctl get /coreos.com/network/config
@@ -64,3 +67,4 @@ systemctl start kubelet kube-proxy docker
 
 master:
 kubectl get nodes
+kubectl get all
